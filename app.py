@@ -39,16 +39,17 @@ def index():
 # route untuk memproses dan memprediksi image
 @app.route('/predict', methods=['POST'])
 def predict():
-    model = load_model('./model/model_rps.h5')
-    file = request.files["file"]
-    file.save(os.path.join('static', 'temp.jpg'))
-    img = cv2.cvtColor(np.array(Image.open(file)), cv2.COLOR_BGR2RGB)
-    img = np.expand_dims(cv2.resize(img, (224, 224)).astype('float32') / 255, axis=0)
+    model = load_model('./model/model_rps.h5') #load model resnet yang sudah di train
+    
+    file = request.files["file"] # mengambil gambar dari input di html
+    file.save(os.path.join('static', 'temp.jpg')) # disimpan menjadi gambar sementara
+    img = cv2.cvtColor(np.array(Image.open(file)), cv2.COLOR_BGR2RGB) # Convert BGR ke RGB
+    img = np.expand_dims(cv2.resize(img, (224, 224)).astype('float32') / 255, axis=0) # resize menjadi gambar yang sesuai dengan input model yang digunakan dan di rescale
+    
     start = time.time()
     pred = model.predict(img)[0]
     labels = (pred > 0.5).astype(int)
-    print(labels)
-    runtimes = round(time.time()-start,4)
+    runtimes = round(time.time()-start,4) # menghitung waktu runtime untuk model memprediksi gambar
     respon_model = [round(elem * 100, 2) for elem in pred]
     return result('Model Rock Paper Scissors', runtimes, respon_model, 'temp.jpg')
 
