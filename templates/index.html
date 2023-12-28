@@ -1,98 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rock Paper Scissors Image Classification</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
 
-    #image-form {
-      background-color: #ffffff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      text-align: center;
-      width: 400px;
-      margin: 0 auto; /* Menengahkan formulir */
-    }
-
-    #image-preview {
-      max-width: 100%; /* Mengikuti lebar parent */
-      max-height: 300px;
-      margin: 10px 0;
-    }
-
-    #image-input {
-      display: none;
-    }
-
-    #upload-button {
-      background-color: #4caf50;
-      color: white;
-      padding: 10px 15px;
-      border: none;
-      cursor: pointer;
-      border-radius: 5px;
-    }
-
-    #submit-button {
-      background-color: #007bff;
-      color: white;
-      padding: 10px 15px;
-      border: none;
-      cursor: pointer;
-      border-radius: 5px;
-    }
-  </style>
+  <link href="{{url_for('static',filename='css/main.css')}}" rel="stylesheet">
+  <title>Klasifikasi Gambar RPS</title>
 </head>
-<body>
 
-  <div id="image-form">
-    <h2>Rock Paper Scissors Image Classification</h2>   
+<body class="bg-green-50">
+  <section class="text-gray-600 body-font">
+    <div class="container mx-auto px-24 py-24">
+      <div class="w-full h-76 border-2 rounded-lg p-12 shadow-md bg-white">
+        <h1 class="text-lg bold font-medium">Klasifikasi Gambar Rock Paper Scissors</h1>
+        <div class="flex flex-row gap-4 mt-6">
+          <form action="/predict" method="post" enctype="multipart/form-data" class="flex flex-col gap-4 w-1/2">
+            <!-- ini dropzone -->
+            <label for="dropzone-file"
+              class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-white hover:bg-gray-100">
+              <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                <svg class="w-10 h-10 mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                </svg>
+                <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to
+                    upload</span> or drag and drop</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400">PNG, JPG or JPEG (MAX. 1024x1024px)</p>
+              </div>
 
-    <form action="/predict" method="post" enctype="multipart/form-data">
-      <input type="file" id="image-input" name="file" accept="image/*" onchange="previewImage()">
-      <label for="image-input" id="upload-button">Upload Image</label>
-
-      <div id="image-preview"></div>
-
-      <button type="submit" id="submit-button">Predict</button>
-    </form>
-  </div>
-
+              <input id="dropzone-file" name="file" onchange="previewImage();" type="file" alt="Input Image"
+                accept="image/jpeg,image/jpg,image/png" class="hidden" />
+            </label>
+            <!-- end of dropzone -->
+            <button type="submit"
+              class="w-full p-4 text-center bg-sky-800 text-white rounded-lg font-semibold hover:bg-sky-700">Execute</button>
+          </form>
+          <div
+            class="grid min-h-[140px] w-1/2 place-items-center overflow-x-scroll lg:overflow-visible">
+            <img id="image-preview" src="/static/placeholder.png" alt="ini image"
+              class="object-contain h-80 w-full">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
   <script>
+
     function previewImage() {
-      var input = document.getElementById('image-input');
       var preview = document.getElementById('image-preview');
-      
-      while (preview.firstChild) {
-        preview.removeChild(preview.firstChild);
-      }
+      var file = document.getElementById('dropzone-file').files[0];
+      var reader = new FileReader();
 
-      if (input.files && input.files[0]) {
-        var reader = new FileReader();
+      reader.onloadend = function () {
+        preview.src = reader.result;
+      };
 
-        reader.onload = function (e) {
-          var image = document.createElement('img');
-          image.src = e.target.result;
-          image.style.maxWidth = '100%';
-          image.style.maxHeight = '100%';
-          preview.appendChild(image);
-        }
-
-        reader.readAsDataURL(input.files[0]);
+      if (file) {
+        reader.readAsDataURL(file);
+      } else {
+        preview.src = '';
       }
     }
   </script>
-
 </body>
+
 </html>

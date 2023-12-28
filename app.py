@@ -49,7 +49,7 @@ def predict():
     start = time.time()
     pred = model.predict(img)[0]
     labels = (pred > 0.5).astype(int)
-    runtimes = round(time.time()-start,4) # menghitung waktu runtime untuk model memprediksi gambar
+    runtimes = round(time.time()-start,4) # menghitung waktu total runtime untuk model memprediksi gambar
     respon_model = [round(elem * 100, 2) for elem in pred]
     return result('Model Rock Paper Scissors', runtimes, respon_model, 'temp.jpg')
 
